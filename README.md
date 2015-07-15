@@ -1,14 +1,10 @@
-# The official raywenderlich.com Objective-C style guide.
+# The official Moko Social Media Objective-C style guide.
 
-This style guide outlines the coding conventions for raywenderlich.com.
-
-## Introduction
-
-The reason we made this style guide was so that we could keep the code in our books, tutorials, and starter kits nice and consistent - even though we have many different authors working on the books.
-
-This style guide is different from other Objective-C style guides you may see, because the focus is centered on readability for print and the web. Many of the decisions were made with an eye toward conserving space for print, easy legibility, and tutorial writing.
+This style guide outlines the coding conventions for our iOS apps.
 
 ## Credits
+
+This style guide was forked from the raywenderlich.com style guide - our thanks to all listed below:
 
 The creation of this style guide was a collaborative effort from various raywenderlich.com team members under the direction of Nicholas Waynik.  The team includes: [Soheil Moayedi Azarpour](https://github.com/moayes), [Ricardo Rendon Cepeda](https://github.com/ricardo-rendoncepeda), [Tony Dahbura](https://github.com/tdahbura), [Colin Eberhardt](https://github.com/ColinEberhardt), [Matt Galloway](https://github.com/mattjgalloway), [Greg Heo](https://github.com/gregheo), [Matthijs Hollemans](https://github.com/hollance), [Christopher LaPollo](https://github.com/elephantronic), [Saul Mora](https://github.com/casademora), [Andy Pereira](https://github.com/macandyp), [Mic Pringle](https://github.com/micpringle), [Pietro Rea](https://github.com/pietrorea), [Cesare Rocchi](https://github.com/funkyboy), [Marin Todorov](https://github.com/icanzilb), [Nicholas Waynik](https://github.com/ndubbs), and [Ray Wenderlich](https://github.com/raywenderlich)
 
@@ -115,7 +111,7 @@ Use `#pragma mark -` to categorize methods in functional groupings and protocol/
 
 ## Spacing
 
-* Indent using 2 spaces (this conserves space in print and makes line wrapping less likely). Never indent with tabs. Be sure to set this preference in Xcode.
+* Indent using 4 spaces (this conserves space in print and makes line wrapping less likely). Never indent with tabs. Be sure to set this preference in Xcode.
 * Method braces and other braces (`if`/`else`/`switch`/`while` etc.) always open on the same line as the statement but close on a new line.
 
 **Preferred:**
@@ -256,6 +252,11 @@ The usage of the word "and" is reserved.  It should not be used for multiple par
 
 Variables should be named as descriptively as possible. Single letter variable names should be avoided except in `for()` loops.
 
+For variables where the content might be ambiguous, the type should be referrenced in the variable name.
+e.g.
+`NSString *urlString = @"www.bbc.co.uk";` not `NSString *url = @"www.bbc.co.uk";`
+`NSString *dateString = @"05/04/79";` not `NSString *date = @"05/04/79";`
+
 Asterisks indicating pointers belong with the variable, e.g., `NSString *text` not `NSString* text` or `NSString * text`, except in the case of constants.
 
 [Private properties](#private-properties) should be used in place of instance variables whenever possible. Although using instance variables is a valid way of doing things, by agreeing to prefer properties our code will be more consistent. 
@@ -290,6 +291,7 @@ Property attributes should be explicitly listed, and will help new programmers w
 ```objc
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 @property (strong, nonatomic) NSString *tutorialName;
+@property (assign, nonatomic) NSInteger rowCount;
 ```
 
 **Not Preferred:**
@@ -297,6 +299,7 @@ Property attributes should be explicitly listed, and will help new programmers w
 ```objc
 @property (nonatomic, weak) IBOutlet UIView *containerView;
 @property (nonatomic) NSString *tutorialName;
+@property (nonatomic) NSInteger rowCount;
 ```
 
 Properties with mutable counterparts (e.g. NSString) should prefer `copy` instead of `strong`. 
@@ -345,6 +348,8 @@ NSArray *names = @[@"Brian", @"Matt", @"Chris", @"Alex", @"Steve", @"Paul"];
 NSDictionary *productManagers = @{@"iPhone": @"Kate", @"iPad": @"Kamal", @"Mobile Web": @"Bill"};
 NSNumber *shouldUseLiterals = @YES;
 NSNumber *buildingStreetNumber = @10018;
+NSMutableDictionary *mutableDict = @{}.mutableCopy;
+NSMutableArray *mutableArray = @[].mutableCopy;
 ```
 
 **Not Preferred:**
@@ -354,6 +359,8 @@ NSArray *names = [NSArray arrayWithObjects:@"Brian", @"Matt", @"Chris", @"Alex",
 NSDictionary *productManagers = [NSDictionary dictionaryWithObjectsAndKeys: @"Kate", @"iPhone", @"Kamal", @"iPad", @"Bill", @"Mobile Web", nil];
 NSNumber *shouldUseLiterals = [NSNumber numberWithBool:YES];
 NSNumber *buildingStreetNumber = [NSNumber numberWithInteger:10018];
+NSMutableDictionary *mutableDict = [[NSMutableDictionary alloc] init];
+NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
 ```
 
 ## Constants
@@ -390,7 +397,7 @@ typedef NS_ENUM(NSInteger, RWTLeftMenuTopItemType) {
 };
 ```
 
-You can also make explicit value assignments (showing older k-style constant definition):
+You can also make explicit value assignments:
 
 ```objc
 typedef NS_ENUM(NSInteger, RWTGlobalConstants) {
@@ -554,6 +561,8 @@ result = (value != 0) ? x : y;
 
 BOOL isHorizontal = YES;
 result = isHorizontal ? x : y;
+
+NSString *resultString = object.stringProperty ?: @"NA";
 ```
 
 **Not Preferred:**
@@ -619,32 +628,6 @@ CGFloat height = frame.size.height;
 CGRect frame = (CGRect){ .origin = CGPointZero, .size = frame.size };
 ```
 
-## Golden Path
-
-When coding with conditionals, the left hand margin of the code should be the "golden" or "happy" path.  That is, don't nest `if` statements.  Multiple return statements are OK.
-
-**Preferred:**
-
-```objc
-- (void)someMethod {
-  if (![someOther boolValue]) {
-	return;
-  }
-
-  //Do something important
-}
-```
-
-**Not Preferred:**
-
-```objc
-- (void)someMethod {
-  if ([someOther boolValue]) {
-    //Do something important
-  }
-}
-```
-
 ## Error handling
 
 When methods return an error parameter by reference, switch on the returned value, not the error variable.
@@ -686,53 +669,8 @@ Singleton objects should use a thread-safe pattern for creating their shared ins
 ```
 This will prevent [possible and sometimes prolific crashes](http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html).
 
-
-## Line Breaks
-
-Line breaks are an important topic since this style guide is focused for print and online readability.
-
-For example:
-```objc
-self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
-```
-A long line of code like this should be carried on to the second line adhering to this style guide's Spacing section (two spaces).
-```objc
-self.productsRequest = [[SKProductsRequest alloc] 
-  initWithProductIdentifiers:productIdentifiers];
-```
-
-
-## Smiley Face
-
-Smiley faces are a very prominent style feature of the raywenderlich.com site!  It is very important to have the correct smile signifying the immense amount of happiness and excitement for the coding topic.  The end square bracket is used because it represents the largest smile able to be captured using ascii art.  A half-hearted smile is represented if an end parenthesis is used, and thus not preferred.
-
-**Preferred:**
-```objc
-:]
-```
-
-**Not Preferred:**
-```objc
-:)
-```  
-
-
 ## Xcode project
 
 The physical files should be kept in sync with the Xcode project files in order to avoid file sprawl. Any Xcode groups created should be reflected by folders in the filesystem. Code should be grouped not only by type, but also by feature for greater clarity.
 
 When possible, always turn on "Treat Warnings as Errors" in the target's Build Settings and enable as many [additional warnings](http://boredzo.org/blog/archives/2009-11-07/warnings) as possible. If you need to ignore a specific warning, use [Clang's pragma feature](http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas).
-
-# Other Objective-C Style Guides
-
-If ours doesn't fit your tastes, have a look at some other style guides:
-
-* [Robots & Pencils](https://github.com/RobotsAndPencils/objective-c-style-guide)
-* [New York Times](https://github.com/NYTimes/objective-c-style-guide)
-* [Google](http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml)
-* [GitHub](https://github.com/github/objective-c-conventions)
-* [Adium](https://trac.adium.im/wiki/CodingStyle)
-* [Sam Soffes](https://gist.github.com/soffes/812796)
-* [CocoaDevCentral](http://cocoadevcentral.com/articles/000082.php)
-* [Luke Redpath](http://lukeredpath.co.uk/blog/my-objective-c-style-guide.html)
-* [Marcus Zarra](http://www.cimgf.com/zds-code-style-guide/)
