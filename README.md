@@ -1,6 +1,6 @@
 # The official Moko Social Media Objective-C style guide.
 
-This style guide outlines the coding conventions for our iOS apps.
+This style guide outlines the conventions for our iOS apps.
 
 ## Credits
 
@@ -45,6 +45,7 @@ Here are some of the documents from Apple that informed the style guide. If some
 * [Error handling](#error-handling)
 * [Singletons](#singletons)
 * [Xcode Project](#xcode-project)
+* [Interface Builder / Storyboards / XIBs](#interface-builder)
 
 
 ## Language
@@ -671,3 +672,11 @@ This will prevent [possible and sometimes prolific crashes](http://cocoasamurai.
 The physical files should be kept in sync with the Xcode project files in order to avoid file sprawl. Any Xcode groups created should be reflected by folders in the filesystem. Code should be grouped not only by type, but also by feature for greater clarity.
 
 When possible, always turn on "Treat Warnings as Errors" in the target's Build Settings and enable as many [additional warnings](http://boredzo.org/blog/archives/2009-11-07/warnings) as possible. If you need to ignore a specific warning, use [Clang's pragma feature](http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas).
+
+## Interface Builder
+
+### Segues
+
+Avoid attaching segues directly to UIButtons or UITableViewCells. Instead, use IBActions that trigger the segue if necessary using `performSegueWithIdentifier:sender:`
+
+This removes the need to use `shouldPerformSegueWithIdentifier:sender:` to intercept the segue.
